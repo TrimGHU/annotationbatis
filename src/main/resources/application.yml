@@ -1,0 +1,32 @@
+server:
+  port: '9090'
+spring:
+  application:
+    name: annotationbatis
+  redis:
+    host: 127.0.0.1
+    password: 12345
+    database: 8
+    pool:
+      max-idle: 6
+      max-wait: 2000
+      max-active: 10
+    port: '6379'
+    timeout: '3000'
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/annotationbatis
+    username: root
+    password: 1234
+    
+mybatis-plus:
+  mapper-locations: classpath:/com/hugui/annotationbatis/mapper/xml/*Mapper.xml
+  typeAliasesPackage: com.hugui.annotationbatis.entity
+  
+logging:
+  level:
+    Root:
+      INFO
+    org.springframework.cache: 
+      DEBUG
+  
