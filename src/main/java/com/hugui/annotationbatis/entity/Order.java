@@ -47,6 +47,8 @@ public class Order implements Serializable {
 	@TableField("update_time")
 	private Date updateTime;
 
+	private String userName;
+
 	@Override
 	public String toString() {
 		return "Order{" + ", id=" + id + ", userId=" + userId + ", address=" + address + ", productName=" + productName

@@ -1,16 +1,19 @@
 package com.hugui.annotationbatis.service.impl;
 
-import com.hugui.annotationbatis.entity.Order;
-import com.hugui.annotationbatis.mapper.OrderMapper;
-import com.hugui.annotationbatis.service.IOrderService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.hugui.annotationbatis.annotation.NeedtoSelectColumn;
+import com.hugui.annotationbatis.entity.Order;
+import com.hugui.annotationbatis.entity.User;
+import com.hugui.annotationbatis.mapper.OrderMapper;
+import com.hugui.annotationbatis.mapper.UserMapper;
+import com.hugui.annotationbatis.service.IOrderService;
+
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author hugui
@@ -20,11 +23,18 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
 
 	@Autowired
-	private OrderMapper mapper;
-	
+	private OrderMapper orderMapper;
+
+	@Autowired
+	private UserMapper userMapper;
+
 	@Override
+	@NeedtoSelectColumn(columnName = "username")
 	public Order findById(String id) {
-		return mapper.findById(id);
+		Order order = orderMapper.findById(id);
+		User user = userMapper.selectById(order.getUserId());
+		order.setUserName(user.getUsername());
+		return order;
 	}
 
 }
