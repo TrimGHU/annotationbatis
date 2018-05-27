@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.hugui.annotationbatis.annotation.NeedtoSelectColumn;
 import com.hugui.annotationbatis.entity.Order;
-import com.hugui.annotationbatis.entity.User;
 import com.hugui.annotationbatis.mapper.OrderMapper;
 import com.hugui.annotationbatis.mapper.UserMapper;
 import com.hugui.annotationbatis.service.IOrderService;
@@ -25,15 +24,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 	@Autowired
 	private OrderMapper orderMapper;
 
-	@Autowired
-	private UserMapper userMapper;
+	// @Autowired
+	// private UserMapper userMapper;
 
 	@Override
-	@NeedtoSelectColumn(columnName = "username")
+	@NeedtoSelectColumn(columnName = "userName", columnClassName = UserMapper.class)
 	public Order findById(String id) {
 		Order order = orderMapper.findById(id);
-		User user = userMapper.selectById(order.getUserId());
-		order.setUserName(user.getUsername());
+		// User user = userMapper.selectById(order.getUserId());
+		// order.setUserName(user.getUsername());
 		return order;
 	}
 

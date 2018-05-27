@@ -17,6 +17,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface NeedtoSelectColumn {
 
-	String columnName() default "";
+	String columnName() ;
+	
+	Class<?> columnClassName() ;
 
 }
