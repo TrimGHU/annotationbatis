@@ -47,7 +47,7 @@ public class Order implements Serializable {
 	@TableField("update_time")
 	private Date updateTime;
 
-	private String userName;
+	private String username;
 
 	@Override
 	public String toString() {

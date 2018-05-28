@@ -17,8 +17,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface NeedtoSelectColumn {
 
-	String columnName() ;
+	String selectColumn() ;
 	
-	Class<?> columnClassName() ;
+	Class<?> fromClass() ;
 
+	String fromMethod();
+	
+	String findByColumn();
 }

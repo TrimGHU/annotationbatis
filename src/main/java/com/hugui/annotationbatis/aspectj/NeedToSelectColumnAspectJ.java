@@ -1,15 +1,16 @@
 package com.hugui.annotationbatis.aspectj;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ import com.hugui.annotationbatis.annotation.NeedtoSelectColumn;
 
 @Aspect
 @Component
-@SuppressWarnings({"unchecked","rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class NeedToSelectColumnAspectJ {
 
 	@Autowired
@@ -32,13 +33,6 @@ public class NeedToSelectColumnAspectJ {
 
 	@Pointcut("@annotation(com.hugui.annotationbatis.annotation.NeedtoSelectColumn)")
 	public void annotationPointCut() {
-	}
-
-	@Before("annotationPointCut()")
-	public void before(JoinPoint joinPoint) {
-		MethodSignature sign = (MethodSignature) joinPoint.getSignature();
-		Method method = sign.getMethod();
-		System.out.println("===>" + method.getName());
 	}
 
 	/**
@@ -49,7 +43,7 @@ public class NeedToSelectColumnAspectJ {
 	 * @param joinPoint
 	 * @param rvt
 	 * @param annotationArgs
-	 * 
+	 * @throws Throwable
 	 * @AfterReturning(returning = "rvt", pointcut =
 	 *                           "annotationPointCut()&&@annotation(annotationArgs)")
 	 *                           public void After(JoinPoint joinPoint, Object rvt,
@@ -74,23 +68,35 @@ public class NeedToSelectColumnAspectJ {
 	 */
 
 	@Around(value = "annotationPointCut()&&@annotation(annotationArgs)")
-	public Object around(ProceedingJoinPoint pjp, NeedtoSelectColumn annotationArgs) {
-		Object obj = null;
+	public Object around(ProceedingJoinPoint pjp, NeedtoSelectColumn annotationArgs) throws Throwable {
+		Object obj = pjp.proceed();
+
 		try {
-			obj = pjp.proceed();
-		} catch (Throwable e) {
+			Class<?> clz = annotationArgs.fromClass();
+			Method fromMethod = clz.getMethod(annotationArgs.fromMethod(), Serializable.class);
+			Object bean = applicationContext.getBean(annotationArgs.fromClass());
+
+			if (obj.getClass().isArray()) {
+				List list = Arrays.asList(obj);
+				if (list.isEmpty() || list.size() == 0) {
+					return obj;
+				}
+
+				for (int i = 0; i < list.size(); i++) {
+					Object fieldValue = getFieldValue(list.get(i), annotationArgs.findByColumn());
+					Object findObj = fromMethod.invoke(bean, fieldValue);
+					setFieldValue(list.get(i), annotationArgs.selectColumn(),
+							getFieldValue(findObj, annotationArgs.selectColumn()));
+				}
+			} else {
+				Object fieldValue = getFieldValue(obj, annotationArgs.findByColumn());
+				Object findObj = fromMethod.invoke(bean, fieldValue);
+				setFieldValue(obj, annotationArgs.selectColumn(),
+						getFieldValue(findObj, annotationArgs.selectColumn()));
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		Object ss = getFieldValue(obj, annotationArgs.columnName());
-		System.out.println(ss);
-		
-		ss = setFieldValue(obj, annotationArgs.columnName(), "GOOD");
-		System.out.println(ss);
-		
-		ss = getFieldValue(obj, annotationArgs.columnName());
-		System.out.println(ss);
-
 		return obj;
 	}
 

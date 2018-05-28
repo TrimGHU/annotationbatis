@@ -24,15 +24,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 	@Autowired
 	private OrderMapper orderMapper;
 
-	// @Autowired
-	// private UserMapper userMapper;
-
 	@Override
-	@NeedtoSelectColumn(columnName = "userName", columnClassName = UserMapper.class)
+	@NeedtoSelectColumn(selectColumn = "username", fromClass = UserMapper.class, fromMethod = "selectById", findByColumn = "userId")
 	public Order findById(String id) {
 		Order order = orderMapper.findById(id);
-		// User user = userMapper.selectById(order.getUserId());
-		// order.setUserName(user.getUsername());
 		return order;
 	}
 
