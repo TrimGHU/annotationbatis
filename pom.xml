@@ -74,22 +74,22 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-        <!-- jackson -->
+		
+        	<!-- jackson -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.9.9</version><!--$NO-MVN-MAN-VER$-->
+			<version>[2.9.10.3,)</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.9</version><!--$NO-MVN-MAN-VER$-->
+			<version>[2.9.10.3,)</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.9.9</version><!--$NO-MVN-MAN-VER$-->
+			<version>[2.9.10.3,)</version>
 		</dependency>
 
         <!-- aop -->
